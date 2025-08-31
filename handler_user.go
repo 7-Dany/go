@@ -10,11 +10,10 @@ import (
 	"github.com/google/uuid"
 )
 
-type parameters struct {
-	Name string `json:"name"`
-}
-
 func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
+	type parameters struct {
+		Name string `json:"name"`
+	}
 	params := parameters{}
 
 	err := json.NewDecoder(r.Body).Decode(&params)
@@ -32,5 +31,9 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 		respondWithError(w, 400, fmt.Sprintf("Error creating user, error:%v", err))
 	}
 
+	respondWithJSON(w, 200, dbUserToUser(user))
+}
+
+func (apiCfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
 	respondWithJSON(w, 200, dbUserToUser(user))
 }
