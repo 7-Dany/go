@@ -15,7 +15,7 @@ import (
 const createFeed = `-- name: CreateFeed :one
 INSERT INTO feeds (id, name, url, user_id, created_at, updated_at) 
 VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING id, name, url, user_id, last_feched_at, created_at, updated_at
+RETURNING id, name, url, user_id, last_fetched_at, created_at, updated_at
 `
 
 type CreateFeedParams struct {
@@ -42,7 +42,7 @@ func (q *Queries) CreateFeed(ctx context.Context, arg CreateFeedParams) (Feed, e
 		&i.Name,
 		&i.Url,
 		&i.UserID,
-		&i.LastFechedAt,
+		&i.LastFetchedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -50,7 +50,7 @@ func (q *Queries) CreateFeed(ctx context.Context, arg CreateFeedParams) (Feed, e
 }
 
 const getFeeds = `-- name: GetFeeds :many
-SELECT id, name, url, user_id, last_feched_at, created_at, updated_at FROM feeds
+SELECT id, name, url, user_id, last_fetched_at, created_at, updated_at FROM feeds
 `
 
 func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
@@ -67,7 +67,7 @@ func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
 			&i.Name,
 			&i.Url,
 			&i.UserID,
-			&i.LastFechedAt,
+			&i.LastFetchedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -85,8 +85,8 @@ func (q *Queries) GetFeeds(ctx context.Context) ([]Feed, error) {
 }
 
 const getNextFeedToFetch = `-- name: GetNextFeedToFetch :many
-SELECT id, name, url, user_id, last_feched_at, created_at, updated_at FROM feeds
-ORDER BY last_feched_at ASC NULLS FIRST
+SELECT id, name, url, user_id, last_fetched_at, created_at, updated_at FROM feeds
+ORDER BY last_fetched_at ASC NULLS FIRST
 LIMIT $1
 `
 
@@ -104,7 +104,7 @@ func (q *Queries) GetNextFeedToFetch(ctx context.Context, limit int32) ([]Feed, 
 			&i.Name,
 			&i.Url,
 			&i.UserID,
-			&i.LastFechedAt,
+			&i.LastFetchedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -123,9 +123,9 @@ func (q *Queries) GetNextFeedToFetch(ctx context.Context, limit int32) ([]Feed, 
 
 const markFeedAsFetched = `-- name: MarkFeedAsFetched :one
 UPDATE feeds 
-SET last_feched_at = NOW(), updated_at = NOW()
+SET last_fetched_at = NOW(), updated_at = NOW()
 WHERE id = $1
-RETURNING id, name, url, user_id, last_feched_at, created_at, updated_at
+RETURNING id, name, url, user_id, last_fetched_at, created_at, updated_at
 `
 
 func (q *Queries) MarkFeedAsFetched(ctx context.Context, id uuid.UUID) (Feed, error) {
@@ -136,7 +136,7 @@ func (q *Queries) MarkFeedAsFetched(ctx context.Context, id uuid.UUID) (Feed, er
 		&i.Name,
 		&i.Url,
 		&i.UserID,
-		&i.LastFechedAt,
+		&i.LastFetchedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
