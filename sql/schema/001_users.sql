@@ -1,10 +1,12 @@
 -- +goose Up
-CREATE TABLE users (
-  id UUID PRIMARY KEY,
-  name TEXT NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
+CREATE TABLE
+  users (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    api_key VARCHAR(64) NOT NULL UNIQUE DEFAULT (encode(sha256(random()::text::bytea), 'hex')),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW ()
+  );
 
 -- +goose Down
 DROP TABLE users;

@@ -13,6 +13,7 @@ import (
 type User struct {
 	ID        uuid.UUID
 	Name      string
+	ApiKey    string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
